@@ -1,39 +1,47 @@
 import './App.css'
+import { ERROR_404_I, ERROR_MSG, ERROR_CONVERT_NEED, PLACEHOLDER_INPUT, PLACEHOLDER_OUTPUT_BIN, PLACEHOLDER_OUTPUT_HEX, TEXT_BIN, TEXT_HEX} from './constant.js'
 import { compileMIPS } from './main.js'
-import { binToHex, hexToBin } from './tools.js'
+import { binToHex, typing } from './tools.js'
 
-const PlaceholderInput = "add $t1, $t2, $t1\naddi $t1, $a0, 0\nlw $a3, 4($t1)"
-const PlaceholderOutputBin = "00000001010010010100100000100000\n00100000100010010000000000000000\n10001101001001110000000000000100"
-const PlaceholderOutputHex = "0x01494820\n0x20890000\n0x8D270004"
-const textBin = "The binary code of your code is here!"
-const textHex = "The hexadecimal code of your code is here!"
 let isBin = true
+let resultBin = ""
 
 
 const handleClickEvent = (e) => {
+  const input = document.getElementById("input")
+  const output = document.getElementById("output")
   switch(e.target.dataset.key) {
     case "clear":
-      document.getElementById("input").value = ""
+      input.value = ""
+      output.value = ""
+      output.placeholder = PLACEHOLDER_OUTPUT_BIN
       break
     case "convert":
-      document.getElementById("output").value = compileMIPS(document.getElementById("input").value.split("\n"))
+      isBin = true
+      resultBin = compileMIPS(input.value.split("\n"))
+      typing("output", resultBin)
       break
     case "sw-bin":
       if(!isBin) {
         isBin = true
-        let content = document.getElementById("output").value.split("\n")
-        let newContent = ""
-        content.forEach(line => newContent += hexToBin(line) + "\n")
-        document.getElementById("output").value = newContent
+        if(input.value && output.value) typing("output", resultBin)
+        if(!input.value && !output.value) output.placeholder = PLACEHOLDER_OUTPUT_BIN
+
       }
       break
     case "sw-hex":
       if(isBin) {
         isBin = false
-        let content = document.getElementById("output").value.split("\n")
-        let newContent = ""
-        content.forEach(line => newContent += binToHex(line) + "\n")
-        document.getElementById("output").value = newContent
+        if(input.value && output.value) {
+          let content = (resultBin !== ERROR_MSG && resultBin !== ERROR_404_I) ? resultBin.split("\n") : ""
+          let newContent = ""
+          content.forEach(line => newContent += binToHex(line) + "\n")
+          typing("output", newContent)
+        }
+        if(!input.value && !output.value) output.placeholder = PLACEHOLDER_OUTPUT_HEX
+        else output.placeholder = ERROR_CONVERT_NEED
+          
+        
       }
       break
     case "copy":
@@ -42,7 +50,6 @@ const handleClickEvent = (e) => {
       break
   }
 }
-
 
 const Header = () => {
   return (
@@ -56,7 +63,7 @@ const Footer = () => {
   return (
     <>
       <div className="fixed bottom-0 mx-auto w-full mb-4">
-        <p className="text-center"><a href="https://github.com/whynotkimhari">Build by whynotkimhari <box-icon type='logo' name='github' size='16px'></box-icon></a></p>
+        <p className="text-center"><a href="https://github.com/whynotkimhari">whynotkimhari <box-icon type='logo' name='github' size='16px'></box-icon></a></p>
       </div>
     </>
   )
@@ -73,7 +80,7 @@ const IOSection = () => {
             style={{resize: "none"}} 
             id="input" 
             autoFocus="autofocus"
-            placeholder={PlaceholderInput}
+            placeholder={PLACEHOLDER_INPUT}
           >
           </textarea>
           <div className="flex self-center">
@@ -82,18 +89,18 @@ const IOSection = () => {
           </div>
         </div>
         <div className="w-full pl-2 pr-4 flex flex-col">
-          <h2 className="text-center font-bold mb-2">{isBin ? textBin : textHex}</h2>
+          <h2 className="text-center font-bold mb-2">{isBin ? TEXT_BIN : TEXT_HEX}</h2>
           <textarea 
             className="w-full h-96 mb-2 border border-black rounded-lg p-2" 
             style={{resize: "none"}} 
             id="output" 
             disabled
-            placeholder={isBin ? PlaceholderOutputBin : PlaceholderOutputHex}
+            placeholder={PLACEHOLDER_OUTPUT_BIN}
           ></textarea>
           <div className="flex self-center">
             <button className="mx-2 p-1 border border-black rounded-lg" data-key="sw-bin" onClick={handleClickEvent}>Binary Version</button>
             <button className="mx-2 p-1 border border-black rounded-lg" data-key="sw-hex" onClick={handleClickEvent}>Hexadecimal Version</button>
-            <button className="mx-2 p-1 border border-black rounded-lg" data-key="copy" onClick={handleClickEvent} disabled>Copy Value</button>
+            <button className="mx-2 p-1 border border-black rounded-lg" data-key="copy" onClick={handleClickEvent}>Copy Value</button>
           </div>
         </div>
       </div>
