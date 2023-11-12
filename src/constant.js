@@ -118,3 +118,12 @@ export const HEX2BIN = {
     "E":"1110",
     "F":"1111",
 }
+
+export const ERROR_MSG = "Something went wrong in this line! Please check the format of your instruction"
+export const ERROR_404_I = "Can not find instruction I"
+export const ERROR_CONVERT_NEED = "Please convert before switch to other type!"
+export const PLACEHOLDER_INPUT = "add $t1, $t2, $t1\naddi $t1, $a0, 0\nlw $a3, 4($t1)"
+export const PLACEHOLDER_OUTPUT_BIN = "00000001010010010100100000100000\n00100000100010010000000000000000\n10001101001001110000000000000100"
+export const PLACEHOLDER_OUTPUT_HEX = "0x01494820\n0x20890000\n0x8D270004"
+export const TEXT_BIN = "The binary code of your code is here!"
+export const TEXT_HEX = "The hexadecimal code of your code is here!"
