@@ -5,7 +5,7 @@ export function binToHex(bin) {
     for(let i = 0; i < bin.length; i+=4) {
         let v = (bin[i] - '0') * 8 + (bin[i + 1] - '0') * 4 + (bin[i + 2] - '0') * 2 + (bin[i + 3] - '0') * 1
         if (v < 10) hex += v.toString()
-        else hex += (v - 10 + 'a').toString()
+        else hex += String.fromCharCode(v - 10 + 97)
     }
     return hex !== "0x" ? hex : ""
 }
@@ -55,7 +55,7 @@ export function toTwoComplement(bin) {
 
 export function restructure(line) {
     let fmtStr = []
-    let vector = line.split(/[, \t():]/)
+    let vector = line.split(/[, \t()]/)
     
     for(let i = 0; i < vector.length; i++) {
         if(vector[i].indexOf('#') !== -1) break
@@ -63,4 +63,22 @@ export function restructure(line) {
             fmtStr.push(vector[i])
     }
     return fmtStr.filter(v => v !== '')
+}
+
+let interval;
+
+export async function typing(id, text) {
+    const output = document.getElementById(id)
+    output.value = ""
+
+    if(interval) clearInterval(interval)
+
+    let index = 0;
+    interval = setInterval(() => {
+        if(index < text.length) {
+            output.value += text[index]
+            index++
+        }
+        else clearInterval(interval)
+    }, 2)
 }
